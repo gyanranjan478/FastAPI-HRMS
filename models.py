@@ -1,8 +1,5 @@
-from sqlalchemy.dialects.oracle import NUMBER
-
-from .database import Base
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
-
+from database import Base
 
 class Employees(Base):
     __tablename__ = 'employees'
@@ -14,5 +11,5 @@ class Employees(Base):
     is_active = Column(Boolean, default=True)
     designation = Column(String)
     phone_number = Column(String)
-    salary = Column(NUMBER)
+    salary = Column(Integer)
     created_at = Column(DateTime, default=func.now())
