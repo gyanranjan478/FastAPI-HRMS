@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, Query
 from starlette import status
 from database import SessionLocal
 from models.employee_model import Employees
-
+from sqlalchemy import or_
 router = APIRouter()
 
 ''' 
@@ -44,10 +44,14 @@ async def read_all(
     skip = (page - 1) * limit
 
     response = db.query(Employees)
-    if name:
-        response = response.filter(Employees.name.contains(name))
-    if department:
-        response = response.filter(Employees.department.contains(department))
+
+    if name or department:
+        filters = []
+        if name:
+            filters.append(Employees.name.ilike(f"%{name}%"))
+        if department:
+            filters.append(Employees.department.ilike(f"%{department}%"))
+        response = response.filter(or_(*filters))
 
     total = response.count()
 
